@@ -1,0 +1,290 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Trusty Services - Professional Portal</title>
+    <link href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700;800&display=swap" rel="stylesheet">
+    <script src="https://unpkg.com/lucide@latest"></script>
+    <link rel="stylesheet" href="styles.css?v=3">
+    <link rel="stylesheet" href="provider.css?v=3">
+</head>
+<body class="gray-bg">
+
+    <header class="header">
+        <div class="container header-container">
+            <div class="logo">
+                <a href="index.html" style="display: flex; align-items: center; gap: 0.5rem; text-decoration: none;">
+                    <i data-lucide="wrench"></i>
+                    <span>Trusty Services <span style="color: var(--clr-text-muted); font-size: 1rem; font-weight: 500;">| Professional Portal</span></span>
+                </a>
+            </div>
+            <nav class="desktop-nav">
+                <button class="btn btn-outline" id="logoutBtn" style="display: none;" onclick="logout()">Log Out</button>
+            </nav>
+        </div>
+    </header>
+
+    <main class="container" style="padding-top: 120px; padding-bottom: 60px;">
+        
+        <!-- Auth Section (Login / Register) -->
+        <section id="authSection" class="auth-section">
+            <div class="auth-card">
+                <div class="auth-tabs">
+                    <button class="auth-tab active" onclick="switchTab('login')"><i data-lucide="log-in"></i> Login</button>
+                    <button class="auth-tab" onclick="switchTab('register')"><i data-lucide="user-plus"></i> Register</button>
+                </div>
+                
+                <div id="loginForm" class="auth-form active">
+                    <h2>Welcome Back</h2>
+                    <p>Log in to manage your service requests.</p>
+                    <div class="form-group">
+                        <label>Email</label>
+                        <input type="email" id="loginEmail" class="form-control" required>
+                    </div>
+                    <div class="form-group mt-3">
+                        <label>Password</label>
+                        <input type="password" id="loginPassword" class="form-control" required>
+                    </div>
+                    <button class="btn btn-primary w-full mt-4" onclick="handleLogin()">Log In</button>
+                    <div class="auth-footer">
+                        <a href="javascript:void(0)" onclick="openForgotPasswordModal()">Forgot Password?</a>
+                    </div>
+                    <div id="loginError" class="error-msg"></div>
+                </div>
+
+                <div id="registerForm" class="auth-form">
+                    <h2>Join as a Professional</h2>
+                    <p>Grow your business with Trusty Services.</p>
+                    <div class="form-grid">
+                        <div class="form-group">
+                            <label>Full Name</label>
+                            <input type="text" id="regName" class="form-control" required>
+                        </div>
+                        <div class="form-group">
+                            <label>Phone Number</label>
+                            <input type="tel" id="regPhone" class="form-control" required>
+                        </div>
+                    </div>
+                    <div class="form-group mt-3">
+                        <label>Email Address</label>
+                        <input type="email" id="regEmail" class="form-control" required>
+                    </div>
+                    <div class="form-group mt-3">
+                        <label>Password</label>
+                        <input type="password" id="regPassword" class="form-control" required>
+                    </div>
+                    <div class="form-grid mt-3">
+                        <div class="form-group">
+                            <label>Service Type</label>
+                            <select id="regService" class="form-control" required>
+                                <option value="Plumbing">Plumbing</option>
+                                <option value="Electrical">Electrical</option>
+                                <option value="Carpentry">Carpentry</option>
+                                <option value="Green Tech">Green Tech</option>
+                                <option value="Automotive">Automotive</option>
+                            </select>
+                        </div>
+                        <div class="form-group">
+                            <label>Service Area Pincode</label>
+                            <input type="text" id="regPincode" class="form-control" placeholder="e.g. 110001" maxlength="6" oninput="this.value = this.value.replace(/[^0-9]/g, '').slice(0, 6)" required>
+                        </div>
+                    </div>
+                    <div class="form-grid mt-3">
+                        <div class="form-group">
+                            <label>Experience</label>
+                            <input type="text" id="regExperience" class="form-control" placeholder="e.g. 5 Years">
+                        </div>
+                        <div class="form-group">
+                            <label>Rate / Fee</label>
+                            <input type="text" id="regRate" class="form-control" placeholder="e.g. $50/hr">
+                        </div>
+                    </div>
+                    <div class="form-group mt-3">
+                        <label>Bio / Description</label>
+                        <textarea id="regBio" class="form-control" rows="2" placeholder="Briefly describe your expertise..."></textarea>
+                    </div>
+                    <button class="btn btn-primary w-full mt-4" onclick="handleRegister()">Register Account</button>
+                    <div id="registerError" class="error-msg"></div>
+                </div>
+            </div>
+        </section>
+
+        <!-- Dashboard Section -->
+        <section id="dashboardSection" class="dashboard-section" style="display: none;">
+            <!-- Verification Warning Banner -->
+            <div id="verificationWarning" style="display: none; background: #FFFBEB; border: 1px solid #FEF3C7; border-radius: var(--radius-md); padding: 1.5rem; margin-bottom: 2rem; display: flex; align-items: center; gap: 1rem; color: #92400E;">
+                <i data-lucide="alert-triangle" style="flex-shrink: 0; width: 24px; height: 24px; color: #D97706;"></i>
+                <div>
+                  <h4 style="margin: 0 0 0.25rem 0; color: #92400E;">Account Under Review</h4>
+                  <p style="margin: 0; font-size: 0.95rem; line-height: 1.5;">Your professional profile is currently being vetted by our administrators. You will be visible to clients and appear in search results once your account is <strong>Verified</strong>.</p>
+                </div>
+            </div>
+
+            <div class="dashboard-header">
+                <div>
+                    <h1 id="welcomeUser">Welcome, Pro</h1>
+                    <p>Here is your service dashboard.</p>
+                </div>
+                <div class="profile-badge">
+                    <div class="avatar"><i data-lucide="user"></i></div>
+                    <div class="profile-info">
+                        <strong id="dashService">Service</strong>
+                        <span id="dashPincode">Pincode</span>
+                    </div>
+                    <button class="btn btn-outline btn-sm shadow-none" onclick="deleteProviderAccount()" style="margin-left: 1rem; color: var(--clr-danger); border-color: #FED7D7; background: #FFF5F5;">
+                        <i data-lucide="trash-2" style="width: 14px; height: 14px;"></i> Delete Account
+                    </button>
+                </div>
+            </div>
+
+            <div class="dashboard-grid">
+                <div class="dashboard-card">
+                    <div class="card-header">
+                        <h3><i data-lucide="calendar"></i> Upcoming Bookings</h3>
+                    </div>
+                    <div class="table-responsive">
+                        <table class="bookings-table">
+                            <thead>
+                                <tr>
+                                    <th>Client Name</th>
+                                    <th>Phone</th>
+                                    <th>Date</th>
+                                    <th>Time</th>
+                                    <th>Status</th>
+                                    <th>Actions</th>
+                                </tr>
+                            </thead>
+                            <tbody id="bookingsTableBody">
+                                <!-- Bookings will be injected here -->
+                            </tbody>
+                        </table>
+                        <div id="noBookings" class="empty-state" style="display: none;">
+                            <i data-lucide="inbox"></i>
+                            <p>No bookings yet. When clients book you, they will appear here.</p>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </section>
+        
+    </main>
+
+    <!-- Forgot Password Modal -->
+    <div id="forgotPasswordModal" class="modal-overlay">
+        <div class="modal">
+            <div class="modal-header">
+                <h2>Reset Password</h2>
+                <button class="close-btn" onclick="closeForgotPasswordModal()"><i data-lucide="x"></i></button>
+            </div>
+            <div class="modal-body" style="padding: 2rem;">
+                
+                <!-- Step 1: Email -->
+                <div id="fpStep1">
+                    <p style="margin-bottom: 1rem; color: var(--clr-text-muted);">Enter the email address associated with your account, and we'll send you an OTP to reset your password.</p>
+                    <div class="form-group">
+                        <label>Email Address</label>
+                        <input type="email" id="fpEmail" class="form-control" placeholder="you@example.com">
+                    </div>
+                    <button class="btn btn-primary w-full mt-4" onclick="handleFPSendOTP('provider')" id="btnFPSend">Send OTP</button>
+                    <div id="fpError1" class="error-msg" style="margin-top: 1rem;"></div>
+                </div>
+                
+                <!-- Step 2: OTP -->
+                <div id="fpStep2" style="display: none;">
+                    <p style="margin-bottom: 1rem; color: var(--clr-text-muted);">We've sent a 6-digit code to your email. Please enter it below.</p>
+                    <div class="form-group">
+                        <label>6-Digit OTP</label>
+                        <input type="text" id="fpOTP" class="form-control" placeholder="123456" maxlength="6" style="letter-spacing: 5px; font-size: 1.5rem; text-align: center;">
+                    </div>
+                    <button class="btn btn-primary w-full mt-4" onclick="handleFPVerifyOTP('provider')" id="btnFPVerify">Verify Code</button>
+                    <div id="fpError2" class="error-msg" style="margin-top: 1rem;"></div>
+                </div>
+
+                <!-- Step 3: New Password -->
+                <div id="fpStep3" style="display: none;">
+                    <p style="margin-bottom: 1rem; color: var(--clr-text-muted);">Code verified! Please create a new password.</p>
+                    <div class="form-group">
+                        <label>New Password</label>
+                        <input type="password" id="fpNewPassword" class="form-control">
+                    </div>
+                    <button class="btn btn-primary w-full mt-4" onclick="handleFPResetPassword('provider')" id="btnFPReset">Reset Password</button>
+                    <div id="fpError3" class="error-msg" style="margin-top: 1rem;"></div>
+                </div>
+                
+                <!-- Success -->
+                <div id="fpSuccess" style="display: none; text-align: center; padding: 2rem 0;">
+                    <i data-lucide="check-circle" style="width: 64px; height: 64px; color: var(--clr-success); margin-bottom: 1rem; display: inline-block;"></i>
+                    <h3 style="margin-bottom: 0.5rem;">Password Reset.</h3>
+                    <p style="color: var(--clr-text-muted);">You can now log in with your new password.</p>
+                    <button class="btn btn-primary mt-4" style="width: 100%; justify-content: center;" onclick="closeForgotPasswordModal()">Back to Login</button>
+                </div>
+
+            </div>
+        </div>
+    </div>
+
+    <!-- Footer -->
+    <footer class="footer">
+        <div class="container footer-container">
+            <div class="footer-brand">
+                <div class="logo">
+                    <i data-lucide="wrench"></i>
+                    <span>Trusty Services</span>
+                </div>
+                <p>Professional Home Services at Your Doorstep.</p>
+                <div class="social-links" style="display: flex; gap: 1.5rem; margin-top: 1.5rem;">
+                    <a href="#" style="color: var(--clr-gray); transition: color 0.3s;" onmouseover="this.style.color='var(--clr-safety-orange)'" onmouseout="this.style.color='var(--clr-gray)'" title="Facebook"><i data-lucide="facebook" style="width: 28px; height: 28px;"></i></a>
+                    <a href="#" style="color: var(--clr-gray); transition: color 0.3s;" onmouseover="this.style.color='var(--clr-safety-orange)'" onmouseout="this.style.color='var(--clr-gray)'" title="Twitter / X"><i data-lucide="twitter" style="width: 28px; height: 28px;"></i></a>
+                    <a href="#" style="color: var(--clr-gray); transition: color 0.3s;" onmouseover="this.style.color='var(--clr-safety-orange)'" onmouseout="this.style.color='var(--clr-gray)'" title="Instagram"><i data-lucide="instagram" style="width: 28px; height: 28px;"></i></a>
+                </div>
+            </div>
+            <div class="footer-links">
+                <div class="link-column">
+                    <h4>Services</h4>
+                    <ul>
+                        <li><a href="#">Plumbing</a></li>
+                        <li><a href="#">Electrical</a></li>
+                        <li><a href="#">Carpentry</a></li>
+                        <li><a href="#">Green Tech</a></li>
+                        <li><a href="#">Automotive</a></li>
+                    </ul>
+                </div>
+                <div class="link-column">
+                    <h4>Legal</h4>
+                    <ul>
+                        <li><a href="#">Terms of Service</a></li>
+                        <li><a href="#">Privacy Policy</a></li>
+                        <li><a href="#">Service Guarantee</a></li>
+                    </ul>
+                </div>
+            </div>
+        </div>
+        <div class="footer-bottom">
+            <div class="container">
+                <p>&copy; 2026 Trusty Services. All rights reserved.</p>
+            </div>
+        </div>
+    </footer>
+
+    <!-- Stylish Delete Confirmation Modal -->
+    <div class="confirm-modal-overlay" id="confirmDeleteModal">
+        <div class="confirm-modal-content" id="confirmDeleteContent">
+            <div class="confirm-icon-circle">
+                <i data-lucide="trash-2" size="32"></i>
+            </div>
+            <h2 class="confirm-title" id="confirmTitle">Are you sure?</h2>
+            <p class="confirm-text" id="confirmText">Deleting your professional profile is permanent. All your history and reviews will be removed.</p>
+            <div class="confirm-btns">
+                <button class="btn btn-outline" onclick="closeConfirmModal()" style="border-radius: var(--radius-md); padding: 0.5rem 1rem;">Cancel</button>
+                <button class="btn btn-danger" id="executeDeleteBtn" onclick="executePermanentDelete()" style="border-radius: var(--radius-md); padding: 0.5rem 1rem;">Delete Account</button>
+            </div>
+        </div>
+    </div>
+
+    <script src="provider.js"></script>
+    <script>
+        lucide.createIcons();
+    </script>
+</body>
+</html>

@@ -1,0 +1,195 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Trusty Services - Client Portal</title>
+    <link href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700;800&display=swap" rel="stylesheet">
+    <script src="https://unpkg.com/lucide@latest"></script>
+    <link rel="stylesheet" href="styles.css?v=3">
+    <link rel="stylesheet" href="provider.css?v=3">
+</head>
+<body class="gray-bg">
+
+    <header class="header">
+        <div class="container header-container">
+            <div class="logo">
+                <a href="index.html" style="display: flex; align-items: center; gap: 0.5rem; text-decoration: none;">
+                    <i data-lucide="wrench"></i>
+                    <span>Trusty Services <span style="color: var(--clr-text-muted); font-size: 1rem; font-weight: 500;">| Client Portal</span></span>
+                </a>
+            </div>
+            <nav class="desktop-nav">
+                <!-- Empty for now, wait until logged in to show anything or hide it -->
+            </nav>
+        </div>
+    </header>
+
+    <main class="container" style="padding-top: 120px; padding-bottom: 60px;">
+        
+        <section id="authSection" class="auth-section">
+            <div class="auth-card">
+                <div class="auth-tabs">
+                    <button class="auth-tab active" onclick="switchClientTab('login')"><i data-lucide="log-in"></i> Login</button>
+                    <button class="auth-tab" onclick="switchClientTab('register')"><i data-lucide="user-plus"></i> Register</button>
+                </div>
+                
+                <div id="loginForm" class="auth-form active">
+                    <h2>Welcome Back</h2>
+                    <p>Log in to manage your bookings and services.</p>
+                    <div class="form-group">
+                        <label>Email</label>
+                        <input type="email" id="loginEmail" class="form-control" required>
+                    </div>
+                    <div class="form-group mt-3">
+                        <label>Password</label>
+                        <input type="password" id="loginPassword" class="form-control" required>
+                    </div>
+                    <button class="btn btn-primary w-full mt-4" onclick="handleClientLogin()">Log In</button>
+                    <div class="auth-footer">
+                        <a href="javascript:void(0)" onclick="openForgotPasswordModal()">Forgot Password?</a>
+                    </div>
+                    <div id="loginError" class="error-msg"></div>
+                </div>
+
+                <div id="registerForm" class="auth-form">
+                    <h2>Join as a Client</h2>
+                    <p>Book premium services at your doorstep.</p>
+                    <div class="form-grid">
+                        <div class="form-group">
+                            <label>Full Name</label>
+                            <input type="text" id="regName" class="form-control" required>
+                        </div>
+                        <div class="form-group">
+                            <label>Phone Number</label>
+                            <input type="tel" id="regPhone" class="form-control" required>
+                        </div>
+                    </div>
+                    <div class="form-group mt-3">
+                        <label>Email Address</label>
+                        <input type="email" id="regEmail" class="form-control" required>
+                    </div>
+                    <div class="form-group mt-3">
+                        <label>Password</label>
+                        <input type="password" id="regPassword" class="form-control" required>
+                    </div>
+                    <button class="btn btn-primary w-full mt-4" onclick="handleClientRegister()">Register Account</button>
+                    <div id="registerError" class="error-msg"></div>
+                </div>
+            </div>
+        </section>
+
+    </main>
+
+    <!-- Forgot Password Modal -->
+    <div id="forgotPasswordModal" class="modal-overlay">
+        <div class="modal">
+            <div class="modal-header">
+                <h2>Reset Password</h2>
+                <button class="close-btn" onclick="closeForgotPasswordModal()"><i data-lucide="x"></i></button>
+            </div>
+            <div class="modal-body" style="padding: 2rem;">
+                
+                <!-- Step 1: Email -->
+                <div id="fpStep1">
+                    <p style="margin-bottom: 1rem; color: var(--clr-text-muted);">Enter the email address associated with your account, and we'll send you an OTP to reset your password.</p>
+                    <div class="form-group">
+                        <label>Email Address</label>
+                        <input type="email" id="fpEmail" class="form-control" placeholder="you@example.com">
+                    </div>
+                    <button class="btn btn-primary w-full mt-4" onclick="handleFPSendOTP('client')" id="btnFPSend">Send OTP</button>
+                    <div id="fpError1" class="error-msg" style="margin-top: 1rem;"></div>
+                </div>
+                
+                <!-- Step 2: OTP -->
+                <div id="fpStep2" style="display: none;">
+                    <p style="margin-bottom: 1rem; color: var(--clr-text-muted);">We've sent a 6-digit code to your email. Please enter it below.</p>
+                    <div class="form-group">
+                        <label>6-Digit OTP</label>
+                        <input type="text" id="fpOTP" class="form-control" placeholder="123456" maxlength="6" style="letter-spacing: 5px; font-size: 1.5rem; text-align: center;">
+                    </div>
+                    <button class="btn btn-primary w-full mt-4" onclick="handleFPVerifyOTP('client')" id="btnFPVerify">Verify Code</button>
+                    <div id="fpError2" class="error-msg" style="margin-top: 1rem;"></div>
+                </div>
+
+                <!-- Step 3: New Password -->
+                <div id="fpStep3" style="display: none;">
+                    <p style="margin-bottom: 1rem; color: var(--clr-text-muted);">Code verified! Please create a new password.</p>
+                    <div class="form-group">
+                        <label>New Password</label>
+                        <input type="password" id="fpNewPassword" class="form-control">
+                    </div>
+                    <button class="btn btn-primary w-full mt-4" onclick="handleFPResetPassword('client')" id="btnFPReset">Reset Password</button>
+                    <div id="fpError3" class="error-msg" style="margin-top: 1rem;"></div>
+                </div>
+                
+                <!-- Success -->
+                <div id="fpSuccess" style="display: none; text-align: center; padding: 2rem 0;">
+                    <i data-lucide="check-circle" style="width: 64px; height: 64px; color: var(--clr-success); margin-bottom: 1rem; display: inline-block;"></i>
+                    <h3 style="margin-bottom: 0.5rem;">Password Reset.</h3>
+                    <p style="color: var(--clr-text-muted);">You can now log in with your new password.</p>
+                    <button class="btn btn-primary mt-4" style="width: 100%; justify-content: center;" onclick="closeForgotPasswordModal()">Back to Login</button>
+                </div>
+
+            </div>
+        </div>
+    </div>
+
+    <!-- Footer -->
+    <footer class="footer">
+        <div class="container footer-container">
+            <div class="footer-brand">
+                <div class="logo">
+                    <i data-lucide="wrench"></i>
+                    <span>Trusty Services</span>
+                </div>
+                <p>Professional Home Services at Your Doorstep.</p>
+                <div class="social-links" style="display: flex; gap: 1.5rem; margin-top: 1.5rem;">
+                    <a href="#" style="color: var(--clr-gray); transition: color 0.3s;" onmouseover="this.style.color='var(--clr-safety-orange)'" onmouseout="this.style.color='var(--clr-gray)'" title="Facebook"><i data-lucide="facebook" style="width: 28px; height: 28px;"></i></a>
+                    <a href="#" style="color: var(--clr-gray); transition: color 0.3s;" onmouseover="this.style.color='var(--clr-safety-orange)'" onmouseout="this.style.color='var(--clr-gray)'" title="Twitter / X"><i data-lucide="twitter" style="width: 28px; height: 28px;"></i></a>
+                    <a href="#" style="color: var(--clr-gray); transition: color 0.3s;" onmouseover="this.style.color='var(--clr-safety-orange)'" onmouseout="this.style.color='var(--clr-gray)'" title="Instagram"><i data-lucide="instagram" style="width: 28px; height: 28px;"></i></a>
+                </div>
+            </div>
+            <div class="footer-links">
+                <div class="link-column">
+                    <h4>Services</h4>
+                    <ul>
+                        <li><a href="#">Plumbing</a></li>
+                        <li><a href="#">Electrical</a></li>
+                        <li><a href="#">Carpentry</a></li>
+                        <li><a href="#">Green Tech</a></li>
+                        <li><a href="#">Automotive</a></li>
+                    </ul>
+                </div>
+                <div class="link-column">
+                    <h4>Company</h4>
+                    <ul>
+                        <li><a href="index.html#about-us">About Us</a></li>
+                        <li><a href="provider.html">Join as Professional</a></li>
+                        <li><a href="index.html#contact-us">Contact</a></li>
+                        <li><a href="#">Blog</a></li>
+                    </ul>
+                </div>
+                <div class="link-column">
+                    <h4>Legal</h4>
+                    <ul>
+                        <li><a href="#">Terms of Service</a></li>
+                        <li><a href="#">Privacy Policy</a></li>
+                        <li><a href="#">Service Guarantee</a></li>
+                    </ul>
+                </div>
+            </div>
+        </div>
+        <div class="footer-bottom">
+            <div class="container">
+                <p>&copy; 2026 Trusty Services. All rights reserved.</p>
+            </div>
+        </div>
+    </footer>
+    
+    <script src="client-auth.js"></script>
+    <script>
+        lucide.createIcons();
+    </script>
+</body>
+</html>

@@ -1,0 +1,147 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Trusty Services - Professional Profile</title>
+    <link href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700;800&display=swap" rel="stylesheet">
+    <script src="https://unpkg.com/lucide@latest"></script>
+    <link rel="stylesheet" href="styles.css?v=6">
+    <link rel="stylesheet" href="provider.css?v=4">
+    <style>
+        .profile-layout {
+            max-width: 1200px;
+            margin: 8rem auto 4rem;
+            padding: 0 1.5rem;
+            display: grid;
+            grid-template-columns: 2fr 1fr;
+            gap: 2rem;
+        }
+        .pro-header {
+            background: white;
+            border-radius: var(--radius-lg);
+            padding: 2.5rem;
+            box-shadow: var(--shadow-md);
+            margin-bottom: 2rem;
+            position: relative;
+            overflow: hidden;
+        }
+        .pro-header::before {
+            content: '';
+            position: absolute;
+            top: 0; left: 0; right: 0; height: 100px;
+            background: linear-gradient(135deg, var(--clr-trust-blue), var(--clr-trust-blue-light));
+            z-index: 0;
+        }
+        .header-content {
+            position: relative;
+            z-index: 1;
+            display: flex;
+            gap: 2rem;
+            align-items: flex-end;
+            margin-top: 50px;
+        }
+        .pro-avatar {
+            width: 140px;
+            height: 140px;
+            border-radius: 50%;
+            background: white;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            font-size: 4rem;
+            color: var(--clr-trust-blue);
+            flex-shrink: 0;
+            overflow: hidden;
+            border: 6px solid white;
+            box-shadow: var(--shadow-md);
+        }
+        .pro-avatar img {
+            width: 100%;
+            height: 100%;
+            object-fit: cover;
+        }
+        .verified-badge {
+            background: #DCFCE7;
+            color: #15803D;
+            padding: 0.25rem 0.75rem;
+            border-radius: var(--radius-full);
+            font-size: 0.8rem;
+            font-weight: 700;
+            display: inline-flex;
+            align-items: center;
+            gap: 0.25rem;
+            margin-bottom: 0.5rem;
+        }
+        .review-card {
+            background: white;
+            padding: 1.5rem;
+            border-radius: var(--radius-md);
+            border: 1px solid #E2E8F0;
+            margin-bottom: 1rem;
+        }
+        .stars {
+            color: #FACC15;
+            display: flex;
+            gap: 2px;
+            margin-bottom: 0.5rem;
+        }
+        .stars svg {
+            fill: #FACC15;
+            width: 16px;
+            height: 16px;
+        }
+        .booking-sidebar {
+            background: white;
+            border-radius: var(--radius-lg);
+            padding: 2rem;
+            box-shadow: var(--shadow-lg);
+            position: sticky;
+            top: 100px;
+        }
+        @media (max-width: 900px) {
+            .profile-layout { grid-template-columns: 1fr; }
+            .header-content { flex-direction: column; align-items: center; text-align: center; }
+        }
+    </style>
+</head>
+<body class="gray-bg">
+    <!-- Header -->
+    <header class="header">
+        <div class="container header-container">
+            <a href="index.html" class="logo">
+                <i data-lucide="wrench"></i> Trusty Services
+            </a>
+            <nav class="desktop-nav">
+                <a href="index.html">Home</a>
+                <a href="#" onclick="openAuthSelectionModal(event)" style="font-weight: 700; color: var(--clr-safety-orange);">Login / Register</a>
+            </nav>
+        </div>
+    </header>
+
+    <div class="profile-layout" id="profileContent">
+        <div style="text-align: center; padding: 4rem; width: 100%;">
+            <i data-lucide="loader" class="spin" style="width: 48px; height: 48px; color: var(--clr-trust-blue);"></i>
+            <p>Loading professional profile...</p>
+        </div>
+    </div>
+
+    <!-- Booking Modal Template built into sidebar -->
+
+    <!-- Footer -->
+    <footer class="footer">
+        <div class="container footer-container">
+            <div class="footer-brand">
+                <div class="logo"><i data-lucide="wrench"></i><span>Trusty Services</span></div>
+                <p>Professional Home Services at Your Doorstep.</p>
+            </div>
+            <div class="footer-bottom" style="grid-column: 1 / -1; margin-top: -3rem;">
+                <p>&copy; 2026 Trusty Services. All rights reserved.</p>
+            </div>
+        </div>
+    </footer>
+
+    <script src="script.js?v=6"></script>
+    <script src="professional.js?v=1"></script>
+</body>
+</html>

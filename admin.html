@@ -1,0 +1,239 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Trusty Services - Admin Analytics</title>
+    <link href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700;800&display=swap" rel="stylesheet">
+    <script src="https://unpkg.com/lucide@latest"></script>
+    <link rel="stylesheet" href="styles.css?v=6">
+    <style>
+        .admin-login-overlay {
+            position: fixed;
+            top: 0; left: 0; width: 100%; height: 100%;
+            background: var(--clr-bg-dark);
+            z-index: 10000;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+        }
+        .admin-login-card {
+            background: white;
+            padding: 3rem;
+            border-radius: var(--radius-lg);
+            width: 100%;
+            max-width: 400px;
+            text-align: center;
+            box-shadow: var(--shadow-xl);
+        }
+        .admin-dashboard {
+            padding-top: 100px;
+            display: none;
+        }
+        .stats-grid {
+            display: grid;
+            grid-template-columns: repeat(auto-fit, minmax(240px, 1fr));
+            gap: 1.5rem;
+            margin-bottom: 3rem;
+        }
+        .stat-card {
+            background: white;
+            padding: 2rem;
+            border-radius: var(--radius-md);
+            box-shadow: var(--shadow-sm);
+            border-left: 4px solid var(--clr-safety-orange);
+            display: flex;
+            align-items: center;
+            gap: 1.5rem;
+        }
+        .stat-card i {
+            color: var(--clr-safety-orange);
+            background: #FFF5F1;
+            padding: 1rem;
+            border-radius: var(--radius-sm);
+        }
+        .stat-info h4 { color: var(--clr-text-muted); font-size: 0.875rem; margin-bottom: 0.25rem; }
+        .stat-info .value { font-size: 2rem; font-weight: 800; color: var(--clr-trust-blue); }
+
+        .admin-table-container {
+            background: white;
+            padding: 2rem;
+            border-radius: var(--radius-md);
+            box-shadow: var(--shadow-sm);
+            margin-bottom: 3rem;
+            overflow-x: auto;
+        }
+        .admin-table-header {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            margin-bottom: 1.5rem;
+        }
+        table {
+            width: 100%;
+            border-collapse: collapse;
+            text-align: left;
+        }
+        th {
+            padding: 1rem;
+            background: var(--clr-bg-light);
+            color: var(--clr-text-muted);
+            font-weight: 600;
+            font-size: 0.875rem;
+            text-transform: uppercase;
+            letter-spacing: 0.05em;
+        }
+        td {
+            padding: 1rem;
+            border-bottom: 1px solid #f1f5f9;
+            color: var(--clr-trust-blue);
+            font-size: 0.95rem;
+        }
+        .badge {
+            padding: 0.25rem 0.75rem;
+            border-radius: var(--radius-full);
+            font-size: 0.75rem;
+            font-weight: 600;
+        }
+        .badge-verified { background: #ECFDF5; color: #059669; }
+        .badge-pending { background: #FEF3C7; color: #D97706; }
+    </style>
+</head>
+<body class="gray-bg">
+
+    <!-- Admin Login Screen -->
+    <div class="admin-login-overlay" id="adminLoginOverlay">
+        <div class="admin-login-card">
+            <div class="icon-circle" style="margin-bottom: 1.5rem;">
+                <i data-lucide="shield-check" size="40" color="var(--clr-safety-orange)"></i>
+            </div>
+            <h2>Owner Portal</h2>
+            <p style="margin-bottom: 2rem; color: var(--clr-text-muted);">Please enter the administrator password.</p>
+            <div class="form-group" style="text-align: left;">
+                <label>Admin Password</label>
+                <input type="password" id="adminPassword" class="form-control" placeholder="••••••••">
+            </div>
+            <p id="loginError" style="color: var(--clr-danger); margin-top: 1rem; display: none;">Invalid password. Access Denied.</p>
+            <button class="btn btn-primary w-full mt-4" onclick="handleAdminLogin()">Unlock Dashboard</button>
+            <a href="index.html" style="display: block; margin-top: 1.5rem; color: var(--clr-text-muted);">Back to Website</a>
+        </div>
+    </div>
+
+    <!-- Header (Admin View) -->
+    <header class="header" id="adminHeader" style="display: none;">
+        <div class="container header-container">
+            <div class="logo">
+                <a href="index.html" style="display: flex; align-items: center; gap: 0.5rem; text-decoration: none;">
+                    <i data-lucide="wrench"></i>
+                    <span>Trusty Services <span style="color: var(--clr-safety-orange);">ADMIN</span></span>
+                </a>
+            </div>
+            <nav class="desktop-nav">
+                <button class="btn btn-outline" onclick="adminLogout()" style="padding: 0.5rem 1rem; font-size: 0.875rem;">Logout</button>
+            </nav>
+        </div>
+    </header>
+
+    <!-- Main Content -->
+    <main class="container admin-dashboard" id="adminDashboard">
+        <div class="section-header">
+            <h2>Platform Performance & Territory Control</h2>
+            <p>Full administrative authority over users, partners, and bookings.</p>
+        </div>
+
+        <!-- Quick Stats -->
+        <div class="stats-grid">
+            <div class="stat-card">
+                <i data-lucide="users"></i>
+                <div class="stat-info">
+                    <h4>Total Clients</h4>
+                    <div class="value" id="statClients">0</div>
+                </div>
+            </div>
+            <div class="stat-card">
+                <i data-lucide="briefcase"></i>
+                <div class="stat-info">
+                    <h4>Service Partners</h4>
+                    <div class="value" id="statProviders">0</div>
+                </div>
+            </div>
+            <div class="stat-card">
+                <i data-lucide="calendar"></i>
+                <div class="stat-info">
+                    <h4>Total Bookings</h4>
+                    <div class="value" id="statBookings">0</div>
+                </div>
+            </div>
+        </div>
+
+        <!-- Bookings Table -->
+        <div class="admin-table-container">
+            <div class="admin-table-header">
+                <h3>All Platform Bookings</h3>
+                <span class="badge" id="bookingCount">0 Total</span>
+            </div>
+            <table>
+                <thead>
+                    <tr>
+                        <th>Booking ID</th>
+                        <th>Client</th>
+                        <th>Provider</th>
+                        <th>Service</th>
+                        <th>Date & Time</th>
+                        <th>Status</th>
+                    </tr>
+                </thead>
+                <tbody id="bookingsTableBody">
+                    <!-- Loaded via JS -->
+                </tbody>
+            </table>
+        </div>
+
+        <!-- Service Providers Table -->
+        <div class="admin-table-container">
+            <div class="admin-table-header">
+                <h3>Vetted Service Providers</h3>
+                <span class="badge" id="providerCount">0 Total</span>
+            </div>
+            <table>
+                <thead>
+                    <tr>
+                        <th>Partner</th>
+                        <th>Email</th>
+                        <th>Service Type</th>
+                        <th>Pincode</th>
+                        <th>Status</th>
+                        <th>Actions</th>
+                    </tr>
+                </thead>
+                <tbody id="providersTableBody">
+                    <!-- Loaded via JS -->
+                </tbody>
+            </table>
+        </div>
+
+        <!-- Registered Clients Table -->
+        <div class="admin-table-container">
+            <div class="admin-table-header">
+                <h3>Registered Clients</h3>
+                <span class="badge" id="clientCount">0 Total</span>
+            </div>
+            <table>
+                <thead>
+                    <tr>
+                        <th>Client Name</th>
+                        <th>Email</th>
+                        <th>Phone</th>
+                        <th>Actions</th>
+                    </tr>
+                </thead>
+                <tbody id="clientsTableBody">
+                    <!-- Loaded via JS -->
+                </tbody>
+            </table>
+        </div>
+    </main>
+
+    <script src="admin.js"></script>
+</body>
+</html>

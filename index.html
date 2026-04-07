@@ -1,0 +1,495 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Trusty Services - Premium On-Demand Home Services</title>
+    <meta name="description" content="Professional Home Services at Your Doorstep in 60 Minutes. Plumbing, Electrical, Carpentry, and more.">
+    <!-- Google Fonts -->
+    <link rel="preconnect" href="https://fonts.googleapis.com">
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+    <link href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700;800&display=swap" rel="stylesheet">
+    <!-- Lucide Icons -->
+    <script src="https://unpkg.com/lucide@latest"></script>
+    <!-- Styles -->
+    <link rel="stylesheet" href="styles.css?v=3">
+</head>
+<body>
+
+    <!-- Header & Navigation -->
+    <header class="header">
+        <div class="container header-container">
+            <div class="logo">
+                <i data-lucide="wrench"></i>
+                <span>Trusty Services</span>
+            </div>
+            
+            <nav class="desktop-nav">
+                <a href="#how-it-works">How it Works</a>
+                <a href="#about-us">About Us</a>
+                <a href="#contact-us">Contact</a>
+                <a href="#" onclick="openAuthSelectionModal(event)" style="font-weight: 700; color: var(--clr-safety-orange);">Login / Register</a>
+            </nav>
+
+            <button class="mobile-menu-btn">
+                <i data-lucide="menu"></i>
+            </button>
+        </div>
+    </header>
+
+    <!-- Hero Section -->
+    <section class="hero">
+        <div class="container hero-container">
+            <div class="hero-content">
+                <div class="badge">100% Verified Professionals</div>
+                <h1>Trusty <span class="highlight">Home Services</span></h1>
+                <p>Vetted, background-checked local professionals ready to help. Find trusted experts for any project in minutes.</p>
+                <div class="hero-actions" style="flex-direction: column; align-items: stretch; gap: 1rem; max-width: 480px;">
+                    <div class="service-area-checker" style="display: flex; flex-wrap: wrap; align-items: center; gap: 0.5rem; background: #FFFFFF; padding: 0.5rem; border-radius: var(--radius-lg); box-shadow: var(--shadow-md); border: 1px solid #E2E8F0;">
+                        <i data-lucide="search" style="color: var(--clr-safety-orange); padding-left: 0.5rem;"></i>
+                        <input type="text" id="searchService" list="micro-services" placeholder="What do you need help with?" style="border: none; background: transparent; padding-left: 0.5rem; outline: none; flex: 1; min-width: 140px; font-weight: 500; color: var(--clr-text-main);">
+                        <datalist id="micro-services">
+                            <option value="Drain Cleaning (Plumbing)">
+                            <option value="Pipe Leak Repair (Plumbing)">
+                            <option value="Water Heater Installation (Plumbing)">
+                            <option value="Ceiling Fan Repair (Electrical)">
+                            <option value="Wiring & Outlets (Electrical)">
+                            <option value="Furniture Assembly (Carpentry)">
+                            <option value="Door & Window Repair (Carpentry)">
+                            <option value="Solar Panel Cleaning (Green Tech)">
+                            <option value="EV Charger Installation (Green Tech)">
+                            <option value="Car Battery Replacement (Automotive)">
+                            <option value="Tire Change (Automotive)">
+                            <option value="Plumbing">
+                            <option value="Electrical">
+                            <option value="Carpentry">
+                            <option value="Green Tech">
+                            <option value="Automotive">
+                        </datalist>
+                        <div style="width: 1px; height: 24px; background: #E2E8F0;"></div>
+                        <i data-lucide="map-pin" style="color: var(--clr-text-muted);"></i>
+                        <input type="text" id="zipCode" placeholder="Pincode" maxlength="6" oninput="this.value = this.value.replace(/[^0-9]/g, '').slice(0, 6)" style="border: none; background: transparent; outline: none; width: 100px;">
+                        <button type="button" class="btn-icon" onclick="detectLocation()" title="Detect My Location" style="background: none; border: none; padding: 0.25rem; color: var(--clr-trust-blue); cursor: pointer; display: flex; align-items: center; justify-content: center; transition: transform 0.2s;">
+                            <i data-lucide="locate-fixed" style="width: 18px; height: 18px;"></i>
+                        </button>
+                    </div>
+                    <button class="btn btn-primary btn-large" onclick="searchProviders()" style="width: 100%; justify-content: center; border-radius: var(--radius-lg);">
+                        Search Professionals
+                    </button>
+                </div>
+                <div id="service-area-result" class="status-message" style="margin-top: 1rem; font-weight: 500;"></div>
+            </div>
+            <div class="hero-image">
+                <img src="https://images.unsplash.com/photo-1581578731548-c64695cc6952?ixlib=rb-4.0.3&auto=format&fit=crop&w=1000&q=80" alt="Professional Handyman">
+                <!-- Trust floating card -->
+                <div class="floating-card trust-card">
+                    <div class="avatar-group">
+                        <span class="avatar"></span>
+                        <span class="avatar"></span>
+                        <span class="avatar"></span>
+                    </div>
+                    <div>
+                        <strong>4.9/5 Average Rating</strong>
+                        <span>Based on 5k+ reviews</span>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </section>
+
+    <!-- Search Results Section -->
+    <section id="search-results-section" class="section gray-bg" style="display: none; padding: 4rem 0 2rem;">
+        <div class="container">
+            <div class="section-header text-center" style="margin-bottom: 3rem;">
+                <h2 id="search-results-title">Available Professionals Near You</h2>
+            </div>
+            <div id="provider-results-grid" class="services-grid">
+                <!-- Provider Cards injected here -->
+            </div>
+        </div>
+    </section>
+
+    <!-- 24/7 Emergency Red Zone -->
+    <section class="emergency-zone">
+        <div class="container emergency-container">
+            <div class="emergency-content">
+                <h2><i data-lucide="alert-triangle"></i> 24/7 Emergency Services</h2>
+                <p>Pipe Bursts, Power Cuts, Lockouts? We dispatch experts immediately. No wait times.</p>
+            </div>
+            <div class="emergency-action">
+                <button class="btn btn-danger btn-large" onclick="openEmergencySOS()">
+                    <i data-lucide="phone"></i> Request Immediate Help
+                </button>
+            </div>
+        </div>
+    </section>
+
+
+    <!-- How it Works -->
+    <section id="how-it-works" class="how-it-works section gray-bg">
+        <div class="container">
+            <div class="section-header text-center">
+                <h2>How Trusty Services Works</h2>
+                <p>Four simple steps to a better home.</p>
+            </div>
+            
+            <div class="steps-grid">
+                <div class="step-card">
+                    <div class="step-number">01</div>
+                    <div class="step-icon">
+                        <i data-lucide="calendar"></i>
+                    </div>
+                    <h3>Book Service</h3>
+                    <p>Choose your service and pick a convenient time slot online.</p>
+                </div>
+                <div class="step-divider"><i data-lucide="chevron-right"></i></div>
+                <div class="step-card">
+                    <div class="step-number">02</div>
+                    <div class="step-icon">
+                        <i data-lucide="user-check"></i>
+                    </div>
+                    <h3>Pro Arrives</h3>
+                    <p>A verified, background-checked professional arrives at your door.</p>
+                </div>
+                <div class="step-divider"><i data-lucide="chevron-right"></i></div>
+                <div class="step-card">
+                    <div class="step-number">03</div>
+                    <div class="step-icon">
+                        <i data-lucide="check-circle"></i>
+                    </div>
+                    <h3>Work Done</h3>
+                    <p>We complete the job with highest quality standards guaranteed.</p>
+                </div>
+                <div class="step-divider"><i data-lucide="chevron-right"></i></div>
+                <div class="step-card">
+                    <div class="step-number">04</div>
+                    <div class="step-icon">
+                        <i data-lucide="credit-card"></i>
+                    </div>
+                    <h3>Easy Pay</h3>
+                    <p>Pay securely online only after the job is completely done.</p>
+                </div>
+            </div>
+        </div>
+    </section>
+
+
+    <!-- Testimonials Section -->
+    <section class="testimonials section">
+        <div class="container">
+            <div class="section-header text-center">
+                <h2>What Our Neighbors Say</h2>
+                <p>Don't just take our word for it.</p>
+            </div>
+            
+            <div class="testimonial-slider">
+                <!-- Slides will be injected via JS -->
+                <div class="testimonial-track" id="testimonial-track">
+                    <!-- Example slide -->
+                    <div class="testimonial-card">
+                        <div class="stars">★★★★★</div>
+                        <p class="review-text">"Had a pipe burst at 2 AM. The emergency team was here in 20 minutes and fixed it instantly. Absolute lifesavers!"</p>
+                        <div class="reviewer">
+                            <div class="reviewer-avatar">S</div>
+                            <div class="reviewer-info">
+                                <strong>Sarah M.</strong>
+                                <span>Plumbing Service</span>
+                            </div>
+                        </div>
+                    </div>
+                    <div class="testimonial-card">
+                        <div class="stars">★★★★★</div>
+                        <p class="review-text">"Booked an IKEA furniture assembly. The carpenter was incredibly professional and fast. Highly recommend!"</p>
+                        <div class="reviewer">
+                            <div class="reviewer-avatar">J</div>
+                            <div class="reviewer-info">
+                                <strong>James T.</strong>
+                                <span>Carpentry Service</span>
+                            </div>
+                        </div>
+                    </div>
+                    <div class="testimonial-card">
+                        <div class="stars">★★★★★</div>
+                        <p class="review-text">"Got an EV charger installed in my garage. The solar/green tech team was very knowledgeable and left the place spotless."</p>
+                        <div class="reviewer">
+                            <div class="reviewer-avatar">E</div>
+                            <div class="reviewer-info">
+                                <strong>Elena R.</strong>
+                                <span>Green Tech</span>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </section>
+
+    <!-- App Promo Section -->
+    <section class="section" style="background-color: var(--clr-bg-light); padding: 6rem 0; overflow: hidden;">
+        <div class="container">
+            <div style="display: flex; flex-wrap: wrap; align-items: center; justify-content: center; gap: 4rem;">
+                <div style="flex: 1; min-width: 300px; max-width: 500px;">
+                    <span class="badge">Coming Soon</span>
+                    <h2 style="font-size: 2.5rem; margin-bottom: 1.5rem;">The SwiftFix App</h2>
+                    <p style="font-size: 1.2rem; color: var(--clr-text-muted); margin-bottom: 2rem;">
+                        Manage your home projects, chat directly with vetted professionals, and upload photos of your issues directly from your smartphone.
+                    </p>
+                    <div style="display: flex; gap: 1rem;">
+                        <button class="btn" style="background: #000; color: #fff; padding: 0.75rem 1.5rem; border-radius: 8px;">
+                            <i data-lucide="apple"></i> App Store
+                        </button>
+                        <button class="btn" style="background: #000; color: #fff; padding: 0.75rem 1.5rem; border-radius: 8px;">
+                            <i data-lucide="play-square"></i> Google Play
+                        </button>
+                    </div>
+                </div>
+                <div style="flex: 1; min-width: 300px; display: flex; justify-content: center; position: relative;">
+                    <div style="width: 280px; height: 560px; background: white; border-radius: 40px; border: 12px solid #1E293B; box-shadow: 0 25px 50px -12px rgba(0,0,0,0.25); position: relative; overflow: hidden; transform: rotate(-5deg);">
+                        <!-- Fake App Screen -->
+                        <div style="padding: 2rem 1.5rem; background: var(--clr-trust-blue); color: white; border-radius: 28px 28px 0 0;">
+                            <h3 style="color: white; font-size: 1.2rem;">Find a Pro</h3>
+                            <div style="background: rgba(255,255,255,0.2); height: 40px; border-radius: 20px; margin-top: 1rem;"></div>
+                        </div>
+                        <div style="padding: 1.5rem;">
+                            <div style="display: flex; gap: 1rem; margin-bottom: 1.5rem;">
+                                <div style="width: 50px; height: 50px; border-radius: 50%; background: #E2E8F0;"></div>
+                                <div style="flex: 1;">
+                                    <div style="height: 12px; width: 80%; background: #E2E8F0; border-radius: 4px; margin-bottom: 8px;"></div>
+                                    <div style="height: 10px; width: 40%; background: #F1F5F9; border-radius: 4px;"></div>
+                                </div>
+                            </div>
+                            <div style="display: flex; gap: 1rem; margin-bottom: 1.5rem;">
+                                <div style="width: 50px; height: 50px; border-radius: 50%; background: #E2E8F0;"></div>
+                                <div style="flex: 1;">
+                                    <div style="height: 12px; width: 70%; background: #E2E8F0; border-radius: 4px; margin-bottom: 8px;"></div>
+                                    <div style="height: 10px; width: 50%; background: #F1F5F9; border-radius: 4px;"></div>
+                                </div>
+                            </div>
+                            <div style="background: #F1F5F9; height: 120px; border-radius: 12px; margin-top: 2rem; display: flex; align-items: center; justify-content: center;">
+                                <i data-lucide="image" style="color: #CBD5E1; width: 40px; height: 40px;"></i>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </section>
+
+    <!-- Footer -->
+    <footer class="footer">
+        <div class="container footer-container">
+            <div class="footer-brand">
+                <div class="logo">
+                    <i data-lucide="wrench"></i>
+                    <span>Trusty Services</span>
+                </div>
+                <p>Professional Home Services at Your Doorstep.</p>
+                <div class="social-links" style="display: flex; gap: 1.5rem; margin-top: 1.5rem;">
+                    <a href="#" class="social-icon" title="Facebook">
+                        <svg xmlns="http://www.w3.org/2000/svg" width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M18 2h-3a5 5 0 0 0-5 5v3H7v4h3v8h4v-8h3l1-4h-4V7a1 1 0 0 1 1-1h3z"/></svg>
+                    </a>
+                    <a href="https://wa.me/919579225940" target="_blank" rel="noopener noreferrer" class="social-icon" title="WhatsApp">
+                        <svg xmlns="http://www.w3.org/2000/svg" width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M3 21l1.65-3.8a9 9 0 1 1 3.4 2.9L3 21"/><path d="M9 10a.5.5 0 0 0 1 0V9a.5.5 0 0 0-1 0v1a5 5 0 0 0 5 5h1a.5.5 0 0 0 0-1h-1a.5.5 0 0 0 0 1"/></svg>
+                    </a>
+                    <a href="https://www.instagram.com/sanchit07.07?igsh=MWFsbmwxZzUwYmk4cA==" target="_blank" rel="noopener noreferrer" class="social-icon" title="Instagram">
+                        <svg xmlns="http://www.w3.org/2000/svg" width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><rect x="2" y="2" width="20" height="20" rx="5" ry="5"/><path d="M16 11.37A4 4 0 1 1 12.63 8 4 4 0 0 1 16 11.37z"/><line x1="17.5" y1="6.5" x2="17.51" y2="6.5"/></svg>
+                    </a>
+                </div>
+            </div>
+            <div class="footer-links">
+                <div class="link-column">
+                    <h4>Services</h4>
+                    <ul>
+                        <li><a href="#">Plumbing</a></li>
+                        <li><a href="#">Electrical</a></li>
+                        <li><a href="#">Carpentry</a></li>
+                        <li><a href="#">Green Tech</a></li>
+                        <li><a href="#">Automotive</a></li>
+                    </ul>
+                </div>
+                <div class="link-column">
+                    <h4>Company</h4>
+                    <ul>
+                        <li><a href="#about-us">About Us</a></li>
+                        <li><a href="provider.html">Join as Professional</a></li>
+                        <li><a href="#contact-us">Contact</a></li>
+                        <li><a href="#">Blog</a></li>
+                    </ul>
+                </div>
+                <div class="link-column">
+                    <h4>Legal</h4>
+                    <ul>
+                        <li><a href="#">Terms of Service</a></li>
+                        <li><a href="#">Privacy Policy</a></li>
+                        <li><a href="#">Service Guarantee</a></li>
+                    </ul>
+                </div>
+            </div>
+        </div>
+        <div class="footer-bottom">
+            <div class="container">
+                <p>&copy; 2026 Trusty Services. All rights reserved.</p>
+            </div>
+        </div>
+    </footer>
+
+    <!-- About Us Modal (Hidden by default) -->
+    <div class="modal-overlay" id="aboutModal">
+        <div class="modal-content" style="max-width: 600px; text-align: center;">
+            <button class="modal-close" onclick="closeAboutModal()"><i data-lucide="x"></i></button>
+            <h2 style="margin-bottom: 1.5rem; color: var(--clr-dark);">About Us</h2>
+            <div style="font-size: 1.05rem; line-height: 1.7; color: var(--clr-gray); text-align: left;">
+                <p>Trusty Services is a specialized platform designed to take the stress out of home and auto maintenance. We bridge the gap between homeowners and top-tier local professionals, providing a seamless, tech-enabled experience that prioritizes reliability and expert craftsmanship.</p>
+                
+                <h4 style="margin-top: 1.5rem; margin-bottom: 0.5rem; color: var(--clr-dark); font-weight: 700;">Why Choose Us?</h4>
+                <ul style="list-style-type: none; padding-left: 0; display: flex; flex-direction: column; gap: 0.75rem;">
+                    <li style="display: flex; align-items: flex-start; gap: 0.5rem;"><i data-lucide="check-circle" style="width: 18px; color: var(--clr-trust-blue); flex-shrink: 0; margin-top: 0.25rem;"></i> <strong>Vetted Mastery:</strong> Every professional is background-checked and 5-point verified.</li>
+                    <li style="display: flex; align-items: flex-start; gap: 0.5rem;"><i data-lucide="check-circle" style="width: 18px; color: var(--clr-trust-blue); flex-shrink: 0; margin-top: 0.25rem;"></i> <strong>Modern Simplicity:</strong> Book in 60 seconds. Manage everything from your phone.</li>
+                    <li style="display: flex; align-items: flex-start; gap: 0.5rem;"><i data-lucide="check-circle" style="width: 18px; color: var(--clr-trust-blue); flex-shrink: 0; margin-top: 0.25rem;"></i> <strong>Upfront & Honest:</strong> No hidden costs. No "no-shows." Just guaranteed quality.</li>
+                </ul>
+                
+                <p style="margin-top: 1.5rem; font-style: italic;">From emergency repairs to scheduled upgrades, we represent the new standard in home care—empowering you to reclaim your time while supporting the skilled tradespeople in your community.</p>
+            </div>
+        </div>
+    </div>
+
+    <!-- Contact Us Modal (Hidden by default) -->
+    <div class="modal-overlay" id="contactModal">
+        <div class="modal-content" style="max-width: 500px; text-align: center;">
+            <button class="modal-close" onclick="closeContactModal()"><i data-lucide="x"></i></button>
+            <h2 style="margin-bottom: 1.5rem; color: var(--clr-dark);">Contact Us</h2>
+            <div style="font-size: 1.1rem; line-height: 2; color: var(--clr-gray); text-align: left;">
+                <p style="display: flex; align-items: center; gap: 0.5rem;">
+                    <i data-lucide="phone" style="color: var(--clr-primary);"></i>
+                    <strong>Customer Care:</strong> +919579225940
+                </p>
+                <p style="display: flex; align-items: center; gap: 0.5rem; margin-top: 1rem;">
+                    <i data-lucide="mail" style="color: var(--clr-primary);"></i>
+                    <strong>Email:</strong> <a href="mailto:sanchitdighe03@gmail.com">sanchitdighe03@gmail.com</a>
+                </p>
+            </div>
+        </div>
+    </div>
+
+    <!-- Interactive Booking Modal (Hidden by default) -->
+    <div class="modal-overlay" id="bookingModal">
+        <input type="hidden" id="selected-provider-id" value="">
+        <div class="modal-content">
+            <button class="modal-close" onclick="closeBookingModal()"><i data-lucide="x"></i></button>
+            
+            <div class="booking-flow">
+                <!-- Step 1: Select Service -->
+                <div class="booking-step active" id="step1">
+                    <h3>Select Service</h3>
+                    <p>What can we help you with?</p>
+                    <select id="modal-service-select" class="form-control">
+                        <option value="Plumbing">Plumbing</option>
+                        <option value="Electrical">Electrical</option>
+                        <option value="Carpentry">Carpentry</option>
+                        <option value="Green Tech">Green Tech (EV/Solar)</option>
+                        <option value="Automotive">Automotive</option>
+                    </select>
+                    <button class="btn btn-primary mt-4 w-full" onclick="nextStep(2)">Continue</button>
+                </div>
+
+                <!-- Step 2: Date & Time -->
+                <div class="booking-step" id="step2">
+                    <h3>Choose Date & Time</h3>
+                    <div class="form-group">
+                        <label>Date</label>
+                        <input type="date" class="form-control" id="booking-date">
+                    </div>
+                    <div class="form-group mt-3">
+                        <label>Time Slot</label>
+                        <select class="form-control" id="booking-time">
+                            <option>Morning (8 AM - 12 PM)</option>
+                            <option>Afternoon (12 PM - 4 PM)</option>
+                            <option>Evening (4 PM - 8 PM)</option>
+                        </select>
+                    </div>
+                    <div class="step-actions mt-4">
+                        <button class="btn btn-outline" onclick="nextStep(1)">Back</button>
+                        <button class="btn btn-primary" onclick="nextStep(3)">Continue</button>
+                    </div>
+                </div>
+
+                <!-- Step 3: Location & Details -->
+                <div class="booking-step" id="step3">
+                    <h3>Your Details</h3>
+                    <div class="form-group">
+                        <input type="text" placeholder="Full Name" class="form-control mb-3" id="booking-name" required>
+                        <input type="tel" placeholder="Phone Number" class="form-control mb-3" id="booking-phone" required>
+                        <textarea placeholder="Service Address & Notes" class="form-control mb-3" rows="3" required></textarea>
+                        
+                        <div style="margin-top: 1rem; padding: 1rem; border: 1px dashed var(--clr-trust-blue); border-radius: var(--radius-md); text-align: center; background: #F8FAFC;">
+                            <i data-lucide="camera" style="color: var(--clr-safety-orange); margin-bottom: 0.5rem; width: 24px; height: 24px;"></i>
+                            <p style="font-size: 0.85rem; margin-bottom: 0.5rem;">Upload a photo of the problem (Optional)</p>
+                            <input type="file" id="booking-photo" accept="image/*" style="font-size: 0.8rem; max-width: 100%;">
+                        </div>
+                    </div>
+                    <div class="step-actions mt-4">
+                        <button class="btn btn-outline" onclick="nextStep(2)">Back</button>
+                        <button class="btn btn-primary" onclick="confirmBooking()">Confirm Booking</button>
+                    </div>
+                </div>
+
+                <!-- Step 4: Success -->
+                <div class="booking-step success-step text-center" id="step4">
+                    <div class="success-icon">
+                        <i data-lucide="check-circle" size="64"></i>
+                    </div>
+                    <h3>Booking Confirmed!</h3>
+                    <p>Your professional is scheduled. You will receive a confirmation SMS shortly.</p>
+                    <button class="btn btn-primary mt-4" onclick="closeBookingModal()">Done</button>
+                </div>
+                
+                <!-- Progress Indicators -->
+                <div class="progress-indicator mt-4" id="booking-progress">
+                    <div class="dot active"></div>
+                    <div class="dot"></div>
+                    <div class="dot"></div>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <!-- Auth Selection Modal (Hidden by default) -->
+    <div class="modal-overlay" id="authSelectionModal">
+        <div class="modal-content" style="max-width: 500px; text-align: center; padding: 3rem 2rem;">
+            <button class="modal-close" onclick="closeAuthSelectionModal()"><i data-lucide="x"></i></button>
+            <h2 style="margin-bottom: 0.5rem; color: var(--clr-trust-blue);">Join Trusty Services</h2>
+            <p style="margin-bottom: 2rem; color: var(--clr-text-muted);">Choose how you want to use the platform.</p>
+            
+            <div style="display: flex; flex-direction: column; gap: 1rem;">
+                <a href="provider.html" class="btn btn-primary btn-large" style="justify-content: center; width: 100%;">
+                    <i data-lucide="briefcase"></i> Service Provider
+                </a>
+                <button class="btn btn-outline btn-large" style="justify-content: center; width: 100%;" onclick="handleClientSelection()">
+                    <i data-lucide="user"></i> Become a Client
+                </button>
+            </div>
+        </div>
+    </div>
+
+    <!-- Floating Emergency SOS Button -->
+    <button class="floating-sos" onclick="openEmergencySOS()" title="24/7 Emergency">
+        <i data-lucide="alert-triangle"></i>
+        <span>Emergency SOS</span>
+    </button>
+
+    <!-- Scripts -->
+    <script src="script.js?v=4"></script>
+    <script>
+        if (typeof lucide !== 'undefined') {
+            lucide.createIcons();
+        }
+
+        // Secret Admin Access: Ctrl + Shift + A
+        document.addEventListener('keydown', (e) => {
+            if (e.ctrlKey && e.shiftKey && e.key === 'A') {
+                window.location.href = 'admin.html';
+            }
+        });
+    </script>
+</body>
+</html>
